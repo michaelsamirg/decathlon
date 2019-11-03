@@ -10,7 +10,7 @@
 ## Access the application simple dashboard
 - link: http://localhost:8080/
 
-##change configuration parameters
+## change configuration parameters
 - In application.properties file
 -- results.file.path: csv file for results
 -- results.file.seperator: csv file data seperator
