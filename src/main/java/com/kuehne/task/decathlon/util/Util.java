@@ -1,7 +1,10 @@
 package com.kuehne.task.decathlon.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,11 +25,14 @@ import com.kuehne.task.decathlon.model.DecathlonModel;
 
 public class Util {
 
+	private static Logger LOG = Logger.getLogger(Util.class.getName());
+	
 	public static String getStringValue(Object value) {
 		try {
 			String s = String.valueOf(value);
 			return s;
 		} catch (NullPointerException e) {
+			LOG.severe(e.getMessage());
 			return null;
 		}
 
@@ -37,8 +43,10 @@ public class Util {
 			Double d = Double.parseDouble(value);
 			return d.doubleValue();
 		} catch (NullPointerException e) {
+			LOG.severe(e.getMessage());
 			return 0.0;
 		} catch (NumberFormatException e) {
+			LOG.severe(e.getMessage());
 			return 0.0;
 		}
 	}
@@ -48,8 +56,10 @@ public class Util {
 			Double d = Double.parseDouble(String.valueOf(value));
 			return d.doubleValue();
 		} catch (NullPointerException e) {
+			LOG.severe(e.getMessage());
 			return 0.0;
 		} catch (NumberFormatException e) {
+			LOG.severe(e.getMessage());
 			return 0.0;
 		}
 	}
@@ -125,7 +135,8 @@ public class Util {
 			Element rootElement = doc.createElement("Decathlon");
 			doc.appendChild(rootElement);
 			
-			int rank = 1;
+			HashMap<Long, String> rankMap = calculateRank(list);
+			
 			for (DecathlonModel decathlonModel : list) {
 				Element athlete = doc.createElement("Athlete");
 				rootElement.appendChild(athlete);
@@ -135,7 +146,7 @@ public class Util {
 				athlete.setAttributeNode(attr);
 				
 				attr = doc.createAttribute("Rank");
-				attr.setValue(rank++ + "");
+				attr.setValue(rankMap.get(decathlonModel.getId()));
 				athlete.setAttributeNode(attr);
 				
 				for (DecathlonEnum decathlonEnum : DecathlonEnum.values()) {
@@ -156,12 +167,52 @@ public class Util {
 			return source;
 			
 		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
+			LOG.severe(e.getMessage());
 		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOG.severe(e.getMessage());
 		}
 		
 		return null;
+	}
+	
+	private static HashMap<Long, String> calculateRank(List<DecathlonModel> list)
+	{
+		String rankStr = "";
+		int rank = 1;
+		double points = 0.0;
+		
+		List<Long> ids = new ArrayList<>();
+		
+		HashMap<Long, String> map = new HashMap<>();
+		
+		for (DecathlonModel decathlonModel : list) {
+			if(points != 0.0 && points != decathlonModel.getTotalPoints())
+			{
+				for (Iterator<Long> iterator = ids.iterator(); iterator.hasNext();) {
+					Long id = (Long) iterator.next();
+					
+					map.put(id,  rankStr);
+				}
+				
+				ids = new ArrayList<>();
+				rankStr = "";
+			}
+			
+			points = decathlonModel.getTotalPoints();
+			
+			if(rankStr.length() > 0) rankStr += "-";
+			
+			rankStr += rank++ + "";
+			
+			ids.add(decathlonModel.getId());
+		}
+		
+		for (Iterator<Long> iterator = ids.iterator(); iterator.hasNext();) {
+			Long id = (Long) iterator.next();
+			
+			map.put(id,  rankStr);
+		}
+		
+		return map;
 	}
 }

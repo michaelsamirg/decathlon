@@ -1,5 +1,7 @@
 package com.kuehne.task.decathlon.service;
 
+import java.util.logging.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -7,15 +9,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandLineAppStartupRunner implements CommandLineRunner{
 
+	private Logger LOG = Logger.getLogger(CommandLineAppStartupRunner.class.getName());
 	@Autowired
 	private DecathlonService decathlonService;
 	
-	@Override
 	public void run(String... args) throws Exception {
-		// TODO Auto-generated method stub
-		decathlonService.saveData();
-		
-		decathlonService.saveXMLFile();
+		try {
+			decathlonService.saveData();
+			
+			decathlonService.saveXMLFile();
+		} catch (Exception e) {
+			LOG.severe(e.getMessage());
+		}
 	}
 
 }

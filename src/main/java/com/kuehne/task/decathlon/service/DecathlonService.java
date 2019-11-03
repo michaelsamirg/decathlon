@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -42,6 +43,8 @@ public class DecathlonService {
 	@Autowired
 	private DecathlonDao decathlonDao;
 
+	private Logger LOG = Logger.getLogger(DecathlonService.class.getName());
+	
 	public DecathlonModel calcualtePoints(DecathlonModel decathlonModel) {
 
 		DecathlonPointsModel decathlonPointsModel = new DecathlonPointsModel();
@@ -120,7 +123,7 @@ public class DecathlonService {
 			transformer.transform(source, result);
 			
 		} catch (TransformerException e) {
-			e.printStackTrace();
+			LOG.severe(e.getMessage());
 		} 
 		
 	}
@@ -176,15 +179,15 @@ public class DecathlonService {
 				}
 
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				LOG.severe(e.getMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOG.severe(e.getMessage());
 			} finally {
 				if (br != null) {
 					try {
 						br.close();
 					} catch (IOException e) {
-						e.printStackTrace();
+						LOG.severe(e.getMessage());
 					}
 				}
 			}
@@ -199,8 +202,10 @@ public class DecathlonService {
 
 			return file;
 		} catch (SecurityException e) {
+			LOG.severe(e.getMessage());
 			return null;
 		} catch (NullPointerException e) {
+			LOG.severe(e.getMessage());
 			return null;
 		}
 
