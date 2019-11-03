@@ -1,10 +1,19 @@
 package com.kuehne.task.decathlon.model;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
 import com.kuehne.task.decathlon.enums.DecathlonEnum;
 import com.kuehne.task.decathlon.util.Util;
 
+@Entity
 public class DecathlonModel {
 
+	@Id
+	@GeneratedValue
+	private Long id;
 	private String athelteName;
 	private double _100m;
 	private double longJump;
@@ -17,6 +26,7 @@ public class DecathlonModel {
 	private double javelinThrow;
 	private double _1500m;
 	
+	@Transient
 	private double totalPoints;
 	
 	public DecathlonModel() {
@@ -43,6 +53,12 @@ public class DecathlonModel {
 		this._1500m = _1500m;
 	}
 
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
 	public String getAthelteName() {
 		return athelteName;
 	}
@@ -168,7 +184,8 @@ public class DecathlonModel {
 			return String.valueOf(this.getJavelinThrow());
 		else if (decathlonEnum.equals(DecathlonEnum._1500M))
 			return String.valueOf(this.get_1500m());
-		
+		else if(decathlonEnum.equals(DecathlonEnum.TOTAL_POINTS))
+			return String.valueOf(this.getTotalPoints());
 		else return "";
 	}
 	
@@ -195,6 +212,8 @@ public class DecathlonModel {
 			return this.getJavelinThrow();
 		else if (decathlonEnum.equals(DecathlonEnum._1500M))
 			return this.get_1500m();
+		else if(decathlonEnum.equals(DecathlonEnum.TOTAL_POINTS))
+			return this.getTotalPoints();
 		
 		else return 0.0;
 	}
@@ -204,7 +223,7 @@ public class DecathlonModel {
 		StringBuffer string = new StringBuffer("DecathlonModel[\n");
 		
 		for (DecathlonEnum decathlonEnum : DecathlonEnum.values()) {
-			string.append(decathlonEnum.name() + ": " + this.getByPointCategory(decathlonEnum));
+			string.append(decathlonEnum.getDisplayName() + ": " + this.getByPointCategory(decathlonEnum));
 			string.append("\n");
 		}
 		
