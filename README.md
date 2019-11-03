@@ -3,6 +3,7 @@
 
 - Run command `mvn spring-boot:run`
 - open http://localhost:8080
+- open d:/file.xml for output results
 
 ## Test the application
 - Run commant `mvn test`
