@@ -132,6 +132,7 @@ public class DecathlonModel {
 		this.totalPoints = totalPoints;
 	}
 
+	// Set field value based on DecathlonEnum
 	public void setByPointCategory(DecathlonEnum decathlonEnum, String value)
 	{
 		if(decathlonEnum.equals(DecathlonEnum.ATHLETE_NAME))
@@ -160,6 +161,7 @@ public class DecathlonModel {
 		}
 	}
 	
+	// get field value as String based on DecathlonEnum
 	public String getByPointCategory(DecathlonEnum decathlonEnum)
 	{
 		if(decathlonEnum.equals(DecathlonEnum.ATHLETE_NAME))
@@ -189,6 +191,7 @@ public class DecathlonModel {
 		else return "";
 	}
 	
+	// get field value as double based on DecathlonEnum
 	public double getByPointCategoryDouble(DecathlonEnum decathlonEnum)
 	{
 		

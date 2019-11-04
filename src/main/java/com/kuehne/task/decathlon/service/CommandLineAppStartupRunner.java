@@ -13,6 +13,8 @@ public class CommandLineAppStartupRunner implements CommandLineRunner{
 	@Autowired
 	private DecathlonService decathlonService;
 	
+	// Run at startup, save athlete data from cvs file, then generate XML file in
+	// the specific path
 	public void run(String... args) throws Exception {
 		try {
 			decathlonService.saveData();

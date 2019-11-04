@@ -1,6 +1,7 @@
 package com.kuehne.task.decathlon.enums;
 
 public enum DecathlonEnum {
+	// List of decathlon model fields
 	ATHLETE_NAME(0, DecathlonTypeEnum.ATHLETE_NAME, "Athlete Name", "athleteName", null),
 	_100M(1, DecathlonTypeEnum.TIME, "100 m", "_100m", null),
 	LONG_JUMP(2, DecathlonTypeEnum.DISTANCE, "Long Jump", "longJump", DecathlonMeasureTypeEnum.CM),
@@ -14,10 +15,15 @@ public enum DecathlonEnum {
 	_1500M(10, DecathlonTypeEnum.TIME, "1500 m", "_1500m", null),
 	TOTAL_POINTS(11, null, "Total Points", "totalPoints", null);
 	
+	// position of the filed
 	private int position;
+	// field type
 	private DecathlonTypeEnum type;
+	// measure type (m/cm)
 	private DecathlonMeasureTypeEnum decathlonMeasureType;
+	// display name (for labels)
 	private String displayName;
+	// fields name (for XML tag name)
 	private String fieldName;
 	
 	private DecathlonEnum(int position, DecathlonTypeEnum type, String displayName, String fieldName, DecathlonMeasureTypeEnum decathlonMeasureType)
@@ -49,6 +55,7 @@ public enum DecathlonEnum {
 		return fieldName;
 	}
 
+	// return DecathlonEnum by position
 	public static DecathlonEnum getByPosition(int position)
 	{
 		for (DecathlonEnum decathlonEnum : DecathlonEnum.values()) {
@@ -59,6 +66,7 @@ public enum DecathlonEnum {
 		return null;
 	}
 	
+	// return DecathlonEnum by type
 	public static DecathlonEnum getByType(DecathlonTypeEnum type)
 	{
 		for (DecathlonEnum decathlonEnum : DecathlonEnum.values()) {

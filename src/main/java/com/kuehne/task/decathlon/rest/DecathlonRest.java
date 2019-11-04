@@ -21,6 +21,7 @@ public class DecathlonRest {
 	@Autowired
 	private DecathlonService decathlonService;
 	
+	// REST Api for decathlon list
 	@RequestMapping(method = RequestMethod.GET, value="/list")
 	@ResponseBody
 	public List<DecathlonModel> getDecathlonList()
@@ -28,6 +29,7 @@ public class DecathlonRest {
 		return decathlonService.getDecathlonList();
 	}
 	
+	// REST Api for calculate decathlon by athlete
 	@RequestMapping(method = RequestMethod.GET, value="/calculate")
 	@ResponseBody
 	public List<List<String>> getCalculatedResults(@RequestParam(name = "athleteId", required=true) Long athleteId)

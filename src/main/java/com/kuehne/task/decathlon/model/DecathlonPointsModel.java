@@ -1,5 +1,6 @@
 package com.kuehne.task.decathlon.model;
 
+// Initialize points calculation table
 public class DecathlonPointsModel {
 
 	public DecathlonModel pointsA;

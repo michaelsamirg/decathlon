@@ -27,6 +27,7 @@ public class Util {
 
 	private static Logger LOG = Logger.getLogger(Util.class.getName());
 	
+	// return String from Object
 	public static String getStringValue(Object value) {
 		try {
 			String s = String.valueOf(value);
@@ -38,6 +39,7 @@ public class Util {
 
 	}
 
+	// return Double from String
 	public static Double getDoubleValue(String value) {
 		try {
 			Double d = Double.parseDouble(value);
@@ -51,6 +53,7 @@ public class Util {
 		}
 	}
 
+	// return Double from Object
 	public static Double getDoubleValue(Object value) {
 		try {
 			Double d = Double.parseDouble(String.valueOf(value));
@@ -64,6 +67,7 @@ public class Util {
 		}
 	}
 
+	// return Double from time (used for csv data)
 	public static Double getDoubleFromTime(String value) {
 		String[] time = value.split("\\.");
 		double doubleValue = 0;
@@ -71,22 +75,29 @@ public class Util {
 		double sec = 0;
 		double mSec = 0;
 
+		// if length == 3, time is in format mm:ss.ms
 		if (time.length == 3) {
 			min = getDoubleValue(time[0]);
 			sec = getDoubleValue(time[1]);
 			mSec = getDoubleValue(time[2]);
-		} else if (time.length == 2) {
+		} 
+		// if length == 2, time is in format ss.ms
+		else if (time.length == 2) {
 			sec = getDoubleValue(time[0]);
 			mSec = getDoubleValue(time[1]);
-		} else if (time.length == 1) {
+		} 
+		// if length == 1, time is in format ms
+		else if (time.length == 1) {
 			mSec = getDoubleValue(time[0]);
 		}
 
+		// calculate seconds
 		doubleValue = (min * 60.0) + sec + (mSec / 100.0);
 
 		return doubleValue;
 	}
 
+	// retrieve events title, for web view
 	public static List<String> getDecathlonTitles() {
 		List<String> list = new ArrayList<>();
 
@@ -100,6 +111,8 @@ public class Util {
 		return list;
 	}
 
+	// Covert decathlon model into list (for web view)
+	// if uint = true, append unit name
 	public static List<String> fromDecathlonModelToList(DecathlonModel decathlonModel, boolean withUnit) {
 		double points;
 		String unit = "";
@@ -126,29 +139,37 @@ public class Util {
 
 	}
 
+	// Convert decathlon list to DOM source for XML generation
 	public static DOMSource convertDecathlonListTOXML(List<DecathlonModel> list) {
 		try {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-			// root elements
+			
+			// Create root element (Decathlon)
 			Document doc = docBuilder.newDocument();
 			Element rootElement = doc.createElement("Decathlon");
 			doc.appendChild(rootElement);
 			
+			// Calcualte Rank
 			HashMap<Long, String> rankMap = calculateRank(list);
 			
 			for (DecathlonModel decathlonModel : list) {
+				
+				// Create athlete node
 				Element athlete = doc.createElement("Athlete");
 				rootElement.appendChild(athlete);
 				
+				// Add id attribute
 				Attr attr = doc.createAttribute("id");
 				attr.setValue(decathlonModel.getId() + "");
 				athlete.setAttributeNode(attr);
 				
+				// Add rank attribute
 				attr = doc.createAttribute("Rank");
 				attr.setValue(rankMap.get(decathlonModel.getId()));
 				athlete.setAttributeNode(attr);
 				
+				// iterate DecathlonEnum to retrieve fields values
 				for (DecathlonEnum decathlonEnum : DecathlonEnum.values()) {
 					Element element = doc.createElement(decathlonEnum.getFieldName());
 					element.appendChild(doc.createTextNode(decathlonModel.getByPointCategory(decathlonEnum)));
@@ -158,6 +179,7 @@ public class Util {
 			
 			DOMSource source = new DOMSource(doc);
 			
+			// Print out XML for test purposes
 			StreamResult result = new StreamResult(System.out);
 			
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -175,17 +197,24 @@ public class Util {
 		return null;
 	}
 	
+	// Calculate rank for Decathlon athletes list
 	private static HashMap<Long, String> calculateRank(List<DecathlonModel> list)
 	{
+		// rank string (for example 2-3-4)
 		String rankStr = "";
 		int rank = 1;
+		
+		//holds last points for comparison
 		double points = 0.0;
 		
+		// holds ids that have same points
 		List<Long> ids = new ArrayList<>();
 		
 		HashMap<Long, String> map = new HashMap<>();
 		
 		for (DecathlonModel decathlonModel : list) {
+			
+			// if points is different, set the ids in the ids list with the current rankStr
 			if(points != 0.0 && points != decathlonModel.getTotalPoints())
 			{
 				for (Iterator<Long> iterator = ids.iterator(); iterator.hasNext();) {
@@ -194,12 +223,14 @@ public class Util {
 					map.put(id,  rankStr);
 				}
 				
+				// reset ids list and rankStr
 				ids = new ArrayList<>();
 				rankStr = "";
 			}
 			
 			points = decathlonModel.getTotalPoints();
 			
+			// if rankStr > 0, contactinate with "-"
 			if(rankStr.length() > 0) rankStr += "-";
 			
 			rankStr += rank++ + "";
@@ -207,6 +238,7 @@ public class Util {
 			ids.add(decathlonModel.getId());
 		}
 		
+		// update rank for the last ids list
 		for (Iterator<Long> iterator = ids.iterator(); iterator.hasNext();) {
 			Long id = (Long) iterator.next();
 			
